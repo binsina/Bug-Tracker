@@ -1,0 +1,384 @@
+﻿@model IEnumerable<Tracker.Models.ProjectPMViewModel>
+
+<head>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+
+	<link rel="stylesheet" href="~/sweetalert-master/example/example.css">
+	<script src="~/sweetalert-master/dist/sweetalert-dev.js"></script>
+	<link rel="stylesheet" href="~/sweetalert-master/dist/sweetalert.css">
+
+
+</head>
+
+
+<style type="text/css">
+	body.modal-open #wrap {
+		-webkit-filter: blur(7px) !important;
+		-moz-filter: blur(7px) !important;
+		-o-filter: blur(7px) !important;
+		-ms-filter: blur(7px) !important;
+		filter: blur(7px) !important;
+	}
+
+	.modal-backdrop {
+		background: #7a7474;
+	}
+
+	.modal {
+		/*   display: block;*/
+		padding-right: 0px;
+		/*background-color: rgba(4, 4, 4, 0.8);*/
+	}
+
+	.modal-dialog {
+		top: 20%;
+		width: 100%;
+		position: absolute;
+	}
+
+	.modal-content {
+		border-radius: 0px;
+		border: none;
+		top: 40%;
+	}
+
+	.modal-body {
+		background-color: #255139;
+		color: white;
+	}
+</style>
+
+
+
+
+
+
+
+
+<div id='myModal' class='modal'>
+	<div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+		<div class="modal-dialog" style="right:0px;left:0px;margin:auto">
+			<div class="modal-content" style="width:900px; height:505px">
+				<div id='myModalContent' style="width:900px; height:505px">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="wrap" class="text-center">
+	<body class="w3-light-grey">
+
+
+
+
+		<!-- w3-content defines a container for fixed size centered content,
+		and is wrapped around the whole page content, except for the footer in this example -->
+		<div class="w3-content" style="max-width:900px">
+
+
+			<!-- Header -->
+			<header class="w3-container w3-center w3-padding-32"></header>
+
+			<div style="align-content:center">
+
+				<p>
+
+					@Html.ActionLink("Create New Project", "Create", "Projects", null, new { @class = "btn btn-primary btn-large" })
+				</p>
+
+			</div>
+
+
+
+
+			<!-- Grid -->
+			<div class="w3-row">
+
+				<!-- Blog entries -->
+				<div class="w3-col l8 s12">
+
+					<!-- Blog entry -->
+
+					@foreach (var item in Model)
+					{
+						<div class="w3-card-4 w3-margin w3-white">
+
+							@if (item.Project.MediaUrl != null)
+							{
+								<img src="@Url.Content(item.Project.MediaUrl)" alt="Nature" style="width:90%">
+							}
+
+							<div class="w3-container w3-padding-8">
+								<h3><b>Project Name: @item.Project.Title</b></h3>
+								<h5> <span class="w3-opacity">@item.Project.Created.DateTime.ToLongDateString()</span></h5>
+							</div>
+
+							<div class="w3-container">
+								<h4>
+									Description: @Html.Raw(item.Project.Description)
+
+								</h4>
+								@*<a href="#" data-toggle="tooltip" title="Hooray!">Hover over me</a>*@
+
+								<div>
+									<a href="@Url.Action("Index", "Milestones", new { projectId = item.Project.Id })" data-toggle="tooltip" title="Click to See or Create Milestones in Projects!">
+										<span>MileStones:</span>  @item.Project.Milestones.Count()
+									</a>
+
+								</div>
+
+								<br />
+
+
+								<div class="w3-row">
+
+									<div class="col-lg-3">
+
+										<a href="javascript:void(0);" class="anchorDetail" data-id="@item.Project.Id" data-toggle="tooltip" title="Click to see Details of this Projects!">
+											<img src="~/images/details.png" style="vertical-align: middle; width: 35px;">Details
+										</a>
+									</div>
+
+									<div class="col-lg-3">
+
+										<a href="@Url.Action("Index", "Tickets", new { projectId = item.Project.Id })" data-toggle="tooltip" title="Click to See Tickets in Projects!">
+											<img src="~/images/Ticket.png" style="vertical-align: middle; width: 40px;">Tickets
+										</a>
+									</div>
+
+									<div class="col-lg-3">
+										@*<button class="delete-photo" data-id="@item.Project.Id">Delete</button>*@
+										<a href="javascript:void(0);" class="DeleteanchorDetail" data-id="@item.Project.Id" data-toggle="tooltip" title="Click to Delete this Project!">
+											<img src="~/images/Garabage.png" style="vertical-align: middle; width: 25px;">Delete
+										</a>
+									</div>
+
+
+									<div class="col-lg-3">
+										<a href="javascript:void(0);" class="MilestonesanchorDetail" data-id="@item.Project.Id">
+											<img src="~/images/stairs.png" style="vertical-align: middle; width: 35px;">Milestones
+										</a>
+
+										<br />
+										<hr />
+										<br />
+
+									</div>
+									<div class="w3-col m4 w3-hide-small">
+
+										<p><span class="w3-padding-large w3-right"><b>Total Tickets  </b><span class="w3-tag">@item.Project.Tickets.Count()</span></span></p>
+									</div>
+									@*<div class="w3-col m4 w3-hide-small">
+
+											<p><span class="w3-padding-large w3-right"><b>Comments  </b><span class="w3-tag">@item.</span></span></p>
+										</div>*@
+
+									<div class="w3-col m4 w3-hide-small">
+										<p><span class="w3-padding-large w3-right"><b>Projects  </b> <span class="w3-tag">@ViewBag.projs</span></span></p>
+
+
+									</div>
+
+								</div>
+
+
+							</div>
+						</div>
+
+						<hr>
+
+						<br />
+						<br />
+					}
+
+
+				</div>
+				<!-- END BLOG ENTRIES -->
+			</div>
+		</div>
+
+</div>
+
+
+
+
+
+
+<!-- END GRID -->
+
+<br>
+
+<!-- END w3-content -->
+<!-- Footer -->
+<footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+	<button class="w3-button w3-disabled w3-padding-large w3-margin-bottom">Previous</button>
+	<button class="w3-button w3-padding-large w3-margin-bottom">Next »</button>
+</footer>
+
+
+
+
+
+
+<script>
+	$(document).ready(function () {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+</script>
+
+
+
+<script>
+
+		var ProjectDeletePostBackURL = 'Projects/Delete';
+
+		$(function () {
+		    $(".DeleteanchorDetail").click(function () {
+		        debugger;
+		        var $buttonClicked = $(this);
+		        var id = $buttonClicked.attr('data-id');
+		        var options = { "backdrop": "static", keyboard: true };
+		        swal({
+		            title: 'Are you sure?',
+		            text: "You won't be able to revert this!",
+		            type: 'warning',
+		            showCancelButton: true,
+		            confirmButtonColor: '#3085d6',
+		            cancelButtonColor: '#d33',
+		            confirmButtonText: 'Yes, delete it!',
+		            cancelButtonText: 'No, cancel!',
+		            confirmButtonClass: 'btn btn-success',
+		            cancelButtonClass: 'btn btn-danger',
+		            closeOnConfrim: false,
+		            CloseOnCancel: false,
+		            buttonsStyling: false
+		        },
+				function (isConfirm) {
+				    if (isConfirm) {
+				        $.ajax({
+				            type: "POST",
+				            url: ProjectDeletePostBackURL,
+				            data: { "Id": id },
+				            success: function (data) {
+				                debugger;
+				                swal("Deleted!", "Your imaginary file has been deleted!", "success");
+
+				                window.location.reload();
+				            }
+				        })
+				    }
+				    else {
+				        swal("Cancelled", "Your imaginary file is safe :)", "error");
+				    }
+				});
+		    });
+
+		});
+
+
+
+</script>
+
+
+
+
+
+
+@*<script>
+		$('button.delete-photo').click(function () {
+			var photoId = $(this).attr("data-id");
+			deletePhoto(photoId);
+		});
+
+		function deletePhoto(photoId) {
+		swal({
+		  title: "Are you sure?",
+		  text: "Are you sure that you want to delete this photo?",
+		  type: "warning",
+		  showCancelButton: true,
+		  closeOnConfirm: false,
+		  confirmButtonText: "Yes, delete it!",
+		  confirmButtonColor: "#ec6c62"
+		},
+
+		function () {
+			$.ajax({
+				type: "GET",
+				url: '/Projects/Delete',
+				contentType: "application/json; charset=utf-8",
+				data: { "Id": photoId },
+				datatype: "Delete",
+
+		  })
+			.done(function (data) {
+				debugger;
+				
+			swal("Deleted!", "Your file was successfully deleted!", "success");
+		  })
+		  .error(function(data) {
+			swal("Oops", "We couldn't connect to the server!", "error");
+		  });
+		});
+	  }
+	</script>*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<script>
+
+			var ProjectDeletePostBackURL = '/Projects/Delete';
+			$(function () {
+				$(".DeleteanchorDetail").click(function () {
+					debugger;
+					var $buttonClicked = $(this);
+					var id = $buttonClicked.attr('data-id');
+					var options = { "backdrop": "static", keyboard: true };
+					$.ajax({
+						type: "GET",
+						url: ProjectDeletePostBackURL,
+						contentType: "application/json; charset=utf-8",
+						data: { "Id": id },
+						datatype: "html",
+						success: function (data) {
+							debugger;
+							swal("Deleted!", "Your file was successfully deleted!", "success");
+
+						},
+						error: function () {
+							swal("Oops", "We couldn't connect to the server!", "error");
+						}
+					});
+				});
+
+				//$("#closebtn").on('click',function(){
+				//    $('#myModal').modal('hide');
+
+			//	$("#closbtn").click(function () {
+			//		$('#myModal').modal('hide');
+			//	});
+
+			});
+
+
+	</script>*@

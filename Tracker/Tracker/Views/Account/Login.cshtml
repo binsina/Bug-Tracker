@@ -1,0 +1,138 @@
+﻿@using Tracker.Models
+@model LoginViewModel
+
+
+
+	
+
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="keywords" content="Tiny Ui Login Form template Responsive, Login form web template,Flat Pricing tables,Flat Drop downs  Sign up Web Templates, Flat Web Templates, Login sign up Responsive web template, SmartPhone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+	<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<!-- Custom Theme files -->
+	<link href="~/web/css/style.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="~/web/css/font-awesome.css" rel="stylesheet">		<!-- font-awesome icons -->
+	<!-- //Custom Theme files -->
+	<!-- web font -->
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'><!--web font-->
+	<!-- //web font -->
+</head>
+<body>
+	<!-- main -->
+	<div class="main-agileits">
+		
+		<div class="mainw3-agileinfo">
+			<!-- login form -->
+			<div class="login-form">
+				<div><h2 style="align-content:center">Please Sign in or Register Below</h2></div>
+				<div class="login-agileits-top">
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+	@Html.AntiForgeryToken()
+
+				@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+	<div style="align-content:center" class="form-group">
+		<div class="col-md-offset-2 col-md-10">
+			@Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+			@Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+			@Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+		</div>
+	</div>
+					<div style="align-content:center" class="form-group">
+						<div class="col-md-offset-2 col-md-10">
+							@Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+							@Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+							@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-offset-2 col-md-10">
+							<div class="checkbox">
+								@Html.CheckBoxFor(m => m.RememberMe)
+								 @Html.LabelFor(m => m.RememberMe)
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-offset-2 col-md-10">
+							<input type="submit" value="Log in" class="btn btn-default" />
+						</div>
+					</div>
+					
+					<div class="login-agileits-bottom">
+					<p>
+						@Html.ActionLink("Register as a new user", "Register")
+					</p>
+
+					<p>
+						@Html.ActionLink("Forgot your password?", "ForgotPassword")
+					</p>
+				</div>
+}
+				<div class="social-w3lsicon">
+					<a href="#" class="social-button twitter"><i class="fa fa-twitter"></i></a>
+					<a href="#" class="social-button facebook"><i class="fa fa-facebook"></i></a>
+					<a href="#" class="social-button google"><i class="fa fa-google-plus"></i></a>
+					<a href="#" class="social-button in"><i class="fa fa-linkedin"></i></a>
+				</div>
+
+			</div>
+		</div>
+	</div>
+		</div>
+    @Html.ActionLink("Login As Guest Admin", "GuestLogin", new { ReturnUrl = ViewBag.ReturnUrl, type = "Admin" }, new { @class = "btn btn-primary" })
+
+
+	<!-- //js -->
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@section Scripts {
+	@Scripts.Render("~/bundles/jqueryval")
+
+<script src="~/Scripts/superplaceholder.js"></script>
+<script>
+	superplaceholder({
+			el: Email,
+			sentences: [ 'admin@demo.com', 'developer@demo.com', 'submitter@demo.com' ],
+			options: {
+				loop: true,
+				startOnFocus: false
+			}
+		})
+		superplaceholder({
+			el: Password,
+			sentences: ['Abc&123!', 'Abc&123!', 'Abc&123!'],
+			options: {
+				loop: true,
+				startOnFocus: false
+			}
+		})
+</script>
+}

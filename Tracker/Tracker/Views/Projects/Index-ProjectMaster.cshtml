@@ -1,0 +1,313 @@
+﻿@model IEnumerable<Tracker.Models.ProjectPMViewModel>
+
+<div style="align-content:center">
+    <p>
+
+        @Html.ActionLink("Create New Project", "Create", "Projects", null, new { @class = "btn btn-primary btn-large" })
+    </p>
+
+</div>
+
+
+<head>
+   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+
+    @*<style>
+        body, h1, h2, h3, h4, h5 {
+            font-family: "Raleway", sans-serif;
+        }
+
+        .carousel-content {
+            color: black;
+            display: flex;
+            align-items: center;
+        }
+    </style>*@
+</head>
+
+<div id='myModal' class='modal'>
+    <div class="modal-dialog" style="right:0px;left:0px;margin:auto">
+        <div class="modal-content">
+            <div id='myModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<body class="w3-light-grey">
+
+    
+    
+
+
+        <!-- w3-content defines a container for fixed size centered content,
+        and is wrapped around the whole page content, except for the footer in this example -->
+        <div class="w3-content" style="max-width:1400px">
+
+            <!-- Header -->
+            <header class="w3-container w3-center w3-padding-32"></header>
+            <!-- Grid -->
+            <div class="w3-row">
+
+                <!-- Blog entries -->
+                <div class="w3-col l8 s12">
+                    @foreach (var item in Model)
+                    {
+                <!-- Blog entry -->
+                        <div class="w3-card-4 w3-margin w3-white">
+                            @if (item.Project.MediaUrl != null)
+                            {
+                                <img src="@Url.Content(item.Project.MediaUrl)" alt="Nature" style="width:90%">
+                            }
+
+                            <div class="w3-container w3-padding-8">
+                                <h3><b>@item.Project.Name</b></h3>
+                                <h5> <span class="w3-opacity">@item.Project.Created</span></h5>
+                            </div>
+
+                            <div class="w3-container">
+                                <p>
+                                    Description: @Html.Raw(item.Project.Description)
+
+                                </p>
+
+                                <p>MileStones: @item.Project.Milestones.Count()</p>
+                                <div class="w3-row">
+
+                                    <div class="col-lg-3">
+
+                                        <a href="javascript:void(0);" class="anchorDetail" data-id="@item.Project.Id">
+                                            <img src="~/images/details.png" style="vertical-align: middle; width: 35px;">Details
+                                        </a>
+                                    </div>
+
+                                    <div class="col-lg-3">
+
+                                        <a href="@Url.Action("Index", "Tickets", new { projectId = item.Project.Id })">
+                                            <img src="~/images/Ticket.png" style="vertical-align: middle; width: 40px;">Tickets
+                                        </a>
+
+                                      
+
+                                        @*<a href="javascript:void(0);" class="TicketsanchorDetail" data-id="@item.Project.Id">
+                                        <a href="@Url.Action("Index", "Tickets", new { @class="TicketsanchorDetail"
+                                            })">
+                                            <img src="~/images/Ticket.png" style="vertical-align: middle; width: 40px;">Tickets
+
+                                        </a>
+                                           <a href="javascript:void(0);" class="TicketsanchorDetail" data-id="@item.Project.Id">
+                                            <img src="~/images/Ticket.png" style="vertical-align: middle; width: 40px;">Tickets
+
+                                        </a>*@
+
+                                    </div>
+                                    
+                                        <div class="col-lg-3">
+                                            <a href="javascript:void(0);" class="DeleteanchorDetail" data-id="@item.Project.Id">
+                                                <img src="~/images/Garabage.png" style="vertical-align: middle; width: 25px;">Delete
+                                            </a>
+                                        </div>
+
+
+                                        <div class="col-lg-3">
+                                            <a href="javascript:void(0);" class="MilestonesanchorDetail" data-id="@item.Project.Id">
+                                                <img src="~/images/stairs.png" style="vertical-align: middle; width: 35px;">Milestones
+                                            </a>
+
+                                           <br/>
+                                            <br />
+
+                                        </div>
+
+
+                                        <div class="w3-col m4 w3-hide-small">
+
+                                            <p><span class="w3-padding-large w3-right"><b>Comments  </b><span class="w3-tag">@item.Project.Tickets.Count()</span></span></p>
+                                        </div>
+
+                                        <div class="w3-col m4 w3-hide-small">
+                                            <p><span class="w3-padding-large w3-right"><b>Projects  </b> <span class="w3-tag">@ViewBag.projs</span></span></p>
+
+
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                    }
+                </div>
+
+
+
+
+                <!-- END BLOG ENTRIES -->
+
+
+            </div>
+        </div>
+
+
+
+
+        <!-- Introduction menu -->
+        <div class="w3-col l8 s12">
+            <!-- About Card -->
+            <div class="w3-card-2 w3-margin w3-margin-top">
+                <img src="~/images/Lightbulbss.png" style="width:25%">
+                <div class="w3-container w3-white">
+                    <div id="carousel-example" class="carousel slide" data-ride="carousel">
+                        <!-- Wrapper for slides -->
+                        <div class="row">
+                            <div class="col-xs-offset-3 col-xs-6">
+                                <div class="carousel-inner">
+                                    <div class="item active">
+                                        <div class="carousel-content">
+                                            <div>
+                                                <h3>#1</h3>
+                                                <p>This is a twitter bootstrap carousel that only uses text. There are no images in the carousel slides.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="carousel-content">
+                                            <div>
+                                                <h3>#2</h3>
+                                                <p>This is a twitter bootstrap carousel that only uses text. There are no images in the carousel slides.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="carousel-content">
+                                            <div>
+                                                <h3>#3</h3>
+                                                <p>This is the third item.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Controls --> <a class="left carousel-control" href="#carousel-example" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel-example" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- Posts -->
+                <!-- END Introduction Menu -->
+            </div>
+        </div>
+
+
+        <!-- END GRID -->
+
+        <br>
+
+        <!-- END w3-content -->
+        <!-- Footer -->
+        <footer class="w3-container w3-dark-grey w3-padding-32 w3-margin-top">
+            <button class="w3-button w3-disabled w3-padding-large w3-margin-bottom">Previous</button>
+            <button class="w3-button w3-padding-large w3-margin-bottom">Next »</button>
+        </footer>
+
+        @*<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document" style="right:0px;left:0px;margin:auto">
+                    <div class="modal-content" style="right:0px;left:0px;margin:auto">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    $('#jaButton').click(function () {
+                        $.ajax({
+                            url: '@Url.Action("Index", "Tickets")',
+                            type: 'GET',
+                            data: { cardId: $('#cardId').val() } //you should build your data here as you need
+                        }).success(function (result) {
+                            $("body").html(result);
+                        });
+                    });
+                });
+            </script>*@
+
+
+</body>
+
+
+
+
+
+
+
+<script>
+    setCarouselHeight('#carousel-example');
+
+    function setCarouselHeight(id) {
+        var slideHeight = [];
+        $(id + ' .item').each(function () {
+            // add all slide heights to an array
+            slideHeight.push($(this).height());
+        });
+
+        // find the tallest item
+        max = Math.max.apply(null, slideHeight);
+
+        // set the slide's height
+        $(id + ' .carousel-content').each(function () {
+            $(this).css('height', max + 'px');
+        });
+    }
+
+</script>
+
+
+
+<head>
+    <meta name="viewport" content="width=800, user-scalable=no">
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="~/Content/Meny/demo.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/3/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="~/Content/css/2-col-portfolio.css" rel="stylesheet">
+
+
+</head>
+

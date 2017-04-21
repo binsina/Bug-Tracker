@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNet.Identity
+
+
+
+@*
+    This partial controls the top menu of the AdminLTE Template, being called automatically by _AdminLteLayout
+       TODO: All of the content in here is stand-in that must be replaced by the real behavior of your app
+*@
+
+@{
+    ViewBag.Layout = null;
+}
+
+<header class="main-header">
+    <!-- Logo -->
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" role="navigation">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <!-- Navbar Right Menu -->
+        <div class="navbar-custom-menu">
+            @*<div class="pull-left">
+                <img src="~/images/wahidHJoudrey.png"  height="60" width="150" />
+            </div>*@
+
+
+            <div class="pull-right">
+
+                <img src="@Url.Action("UserPhotos", "Home" )" style="width:48px;height:48px; background: floralwhite;
+                 margin: auto;
+                 -moz-border-radius: 60px;
+                 border-radius: 10px;
+                 padding: 6px;
+
+                 box-shadow: 0px 0px 10px #888;" />
+
+
+            </div>
+
+            
+
+            @Html.Partial("_LoginPartial")
+
+
+        </div>
+    </nav>
+</header>

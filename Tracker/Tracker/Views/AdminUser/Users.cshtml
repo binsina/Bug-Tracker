@@ -1,0 +1,90 @@
+﻿@using Tracker.HelperClass;
+@model List<Tracker.Models.UsersViewModel>
+
+
+
+
+<div class="container">
+    <h2> Users in Database </h2>
+
+    @*<p>
+            @Html.ActionLink("Create New", "Create")
+        </p>*@
+
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+
+
+
+
+    <div class="row">
+        <div class="col-md-10">
+            <div class="panel panel-green margin-bottom-40">
+                
+                <table @*class="table table-hover"*@>
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Display Name</th>
+                            <th>Roles</th>
+                            <th>Actions</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.User.UserName   </td>
+                                <td>@user.User.DisplayName   </td>
+                                <td>
+                                    @foreach (var role in user.Roles)
+                                    {
+                                        <p>@role</p>
+                                    }
+                                </td>
+                                <td><a href="@Url.Action("EditUser", new { Id = user.User.Id})">Assign New Role</a></td>
+                                <td><a href="@Url.Action("DetailUserRoles", new { Id = user.User.Id})">Details</a></td>
+
+                                @*<td><a href="@Url.Action("ListTickets","Projects", new { ownerId = user.User.Id})">  Tickets Owned</a></td>
+                                @if (user.User.IsUserInRole("Developer"))
+                                {
+                                    <td><a href="@Url.Action("ListTickets","Projects", new { assignedId = user.User.Id})">  Tickets Assigned</a></td>
+                                }
+                                else
+                                {
+                                    <td> </td>
+                                }*@
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--End Hover Rows-->
+    </div>
+</div>
+
+
+
+
+

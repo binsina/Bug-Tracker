@@ -1,0 +1,347 @@
+﻿@model Tracker.Models.Ticket
+@using Microsoft.AspNet.Identity;
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>
+
+
+<div>
+    <h4>Ticket</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-10">
+            <table class="example">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Title)
+                        </th>
+                        
+
+                        <th>
+                            @Html.DisplayName("Ticket Type")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Tiket Status")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Ticket Priority")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Description")
+                        </th>
+                       
+                       
+                        <th>
+                            @Html.DisplayNameFor(model => model.Created)
+                        </th>
+                       
+                        @*<th>
+                            @Html.DisplayNameFor(model => model.AssignedToUser)
+                        </th>*@
+                    </tr>
+
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(model => Model.Title)
+                        </td>
+                       
+
+                        <td>
+                            @Html.DisplayFor(model => Model.TicketType.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => Model.TicketStatus.Name)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(model => Model.TicketPriority.Name)
+                        </td>
+                        <td>
+                            @Html.Raw(Model.Description)
+                        </td>
+
+                     
+                       
+
+                        <td>
+                            @Model.Created.DateTime.ToLongDateString()
+                        </td>
+                        @*<td>
+                            @Html.DisplayFor(model => Model.AssignedToUser)
+                        </td>*@
+                    </tr>
+                </tbody>
+
+
+
+            </table>
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index", new { ProjectId = Model.ProjectId })
+    @Html.ActionLink("Assign a Developer", "AssignDeveloperTicket", new { ticketId = Model.Id }, new { @class="btn btn-primary"})
+
+</p>
+<hr />
+
+
+<h2>Ticket History</h2>
+<hr />
+
+@foreach (var item in Model.TicketHistories)
+{
+
+   
+    <div class="row">
+
+        <div class="containter">
+         
+           
+
+            <p>Item that was changed</p>
+            
+            <div class="col-3">
+                <p>@item.Property</p>
+            </div>
+
+            <div class="col-3">
+                Old Value: @item.OldValue
+              </div>
+
+            <div class="col-3">
+               new Value: @item.NewValue
+            </div>
+            <div class="col-3">
+                Time it was Changed: @item.Changed and by: @item.User
+             </div>
+
+            
+
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+@using (Html.BeginForm("CreateAttachment", "Tickets", FormMethod.Post, new { enctype = "Multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <hr />
+
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="w-box blog-post">
+                <div class="comments-wr">
+
+                    <div class="well">
+                        <h4>Attach a File:</h4>
+
+                        <div class="form-group">
+
+                            <div class="col-md-10">
+                                <input type="file" name="attach" id="fileUpload" onchange="loadFile(event)" class="form-control" required />
+
+                                <div style="max-height:200px; max-width:200px">
+                                    @if (!string.IsNullOrWhiteSpace("attach"))
+                                    {
+                                        <h5><strong>File Preview</strong></h5>
+                                        <img class="img-responsive" id="output" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                        <br />
+                        <br />
+
+
+                        <textarea class="form-control" rows="3" name="Description" placeholder="Write File Description here..."></textarea>
+
+
+                        <br />
+                        <input type="hidden" name="TicketId" value="@Model.Id" />
+
+                    </div>
+                    <button type="submit">Attach File</button>
+                    <input type="reset" value="Reset">
+                    <span class="clearfix"></span>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+}
+<hr />
+
+
+
+
+
+
+
+
+@using (Html.BeginForm("AddComment", "Tickets", FormMethod.Post, new { enctype = "Multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <hr />
+
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="w-box blog-post">
+                <div class="comments-wr">
+
+                    <div class="well">
+                        <h4>Leave a Comment:</h4>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form class="form-light" action="http://" method="post" role="form">
+                                <div class="form-group">
+
+                                    <textarea class="form-control" rows="3" name="Comment" placeholder="Write you comment here..."></textarea>
+                                    <br /><input type="hidden" name="TicketId" value="@Model.Id" />
+
+                                </div>
+                                <button type="submit">Send comment</button>
+                                <input type="reset" value="Reset">
+                                <span class="clearfix"></span>
+
+                            </form>
+                        }
+                        else
+                        {
+                            <span>
+                                Please log in to post a comment.
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+<hr />
+
+
+@foreach (var item in Model.TicketComments)
+{
+    <div class="comment-container">
+
+        <div class="avatar"> <img src="@Url.Action("UserPhotos", "Home" )" height="48" width="48" /> </div>
+
+        @*<img src="@Url.Action("UserPhotos", "Home" )" height="48" width="48" />*@
+
+        <div class="comment-entry" id="comment-416746">
+
+            <p>@item.Comment</p>
+
+            @*<div class="reply">
+                    <a rel="nofollow"
+                       class="comment-reply-link"
+                       href="@Url.Action("Details","Posts",new { Slug = item.Slug})">Reply</a>
+                </div> /.reply*@
+
+        </div><!-- /comment-entry -->
+
+        <div class="comment-head">
+
+            <span class="name"><a href="@Url.Action("Index","Tickets")" rel="external nofollow" class="url">Posted by:  @User.Identity.Name</a></span>
+            <br />
+            <span class="date">on: @item.Created</span>
+
+
+        </div><!-- /.comment-head -->
+
+
+    </div>
+
+    <hr />
+
+}
+@*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+@foreach (var item in Model.TicketAttachments)
+{
+    <div class="comment-container">
+
+        <div class="avatar"> <img src="~/images/File.png" height="48" width="48" /> </div>
+
+        <hr />
+        <p>@item.FileUrl</p>
+
+        <div class="comment-entry" id="comment-416746">
+
+            <p>@item.Description</p>
+
+
+
+        </div><!-- /comment-entry -->
+
+        <div class="comment-head">
+
+            <span class="name"><a href="@Url.Action("Index","Home")" rel="external nofollow" class="url">File Attached by:  @User.Identity.Name</a></span>
+            <br />
+            <span class="date">on: @item.Created</span>
+
+
+        </div><!-- /.comment-head -->
+
+
+    </div>
+
+    <hr />
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+@section scripts{
+
+    <script src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".example").DataTable(
+                //{
+                //"paging": false,
+                //"ordering": false
+            //}
+            );
+        });
+    </script>
+}

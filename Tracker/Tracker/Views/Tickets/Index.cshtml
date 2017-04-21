@@ -1,0 +1,613 @@
+﻿@model Tracker.Models.TicketsIndexViewModel
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+
+
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .overlay {
+            height: 0%;
+            width: 100%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0, 0.9);
+            overflow-y: hidden;
+            transition: 0.5s;
+        }
+
+        .overlay-content {
+            position: relative;
+            top: 25%;
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .overlay a {
+            padding: 8px;
+            text-decoration: none;
+            font-size: 36px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+            .overlay a:hover, .overlay a:focus {
+                color: #f1f1f1;
+            }
+
+        .overlay .closebtn {
+            position: absolute;
+            top: 20px;
+            right: 45px;
+            font-size: 60px;
+        }
+
+        @@media screen and (max-height: 450px) {
+            .overlay {
+                overflow-y: auto;
+            }
+
+                .overlay a {
+                    font-size: 20px;
+                }
+
+                .overlay .closebtn {
+                    font-size: 40px;
+                    top: 15px;
+                    right: 35px;
+                }
+        }
+    </style>
+</head>
+
+
+<style type="text/css">
+    body.modal-open #wrap {
+        -webkit-filter: blur(7px) !important;
+        -moz-filter: blur(7px) !important;
+        -o-filter: blur(7px) !important;
+        -ms-filter: blur(7px) !important;
+        filter: blur(7px) !important;
+    }
+
+    .modal-backdrop {
+        background: #7a7474;
+    }
+</style>
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.css">
+
+
+@*<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>*@
+
+<div id='myModal' class='modal'>
+    <div class="modal-dialog" style="right:0px;left:0px;margin:auto">
+        <div class="modal-content">
+            <div id='myModalContent'>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="wrap" class="text-center">
+
+
+
+
+    <h2>@Html.ActionLink("New ticket", "Create", "Tickets", new { ProjectId = Model.ProjectId }, new { @class = "btn btn-primary btn-large" })</h2>
+
+
+
+    @if (User.IsInRole("Admin"))
+            {
+        <h2>All Tickets in DataBase</h2>
+        <hr />
+        <table class="example">
+            <thead>
+                <tr>
+
+                    <th>
+                        @Html.DisplayName("Project")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Priority")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Status")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Type")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Quick Details")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Create Date")
+                    </th>
+                    <th>
+                        @Html.DisplayName("User Options")
+                    </th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AdminTickets)
+                {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(m => item.Project.Title)
+                        </td>
+
+
+                        @if ((item.TicketPriority.Name == "High") || (item.TicketPriority.Name == "Highest-Severe Issue"))
+                        {
+
+                            <td> @item.TicketPriority.Name<img src="~/Content/AdminLTE/img/redflag.png" height="15" width="15"></td>
+                        }
+                        else
+                        {
+                            <td> @item.TicketPriority.Name</td>
+                        }
+
+
+                        <td>
+                            @Html.DisplayFor(m => item.TicketStatus.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.TicketType.Name)
+                        </td>
+
+                        <td>
+                            <a href="javascript:void(0);" class="DISP" data-id="@item.Id">
+                                <i class="glyphicon glyphicon-arrow-down"></i>
+                                <span class="sr-only"></span>Description of Ticket
+                            </a>
+                        </td>
+                        <td>
+                            @item.Created.DateTime.ToLongDateString()
+                        </td>
+
+
+                        <td>
+
+                            <span style="font-size:30px;cursor:pointer" onclick="openNav(@item.Id)">&#9776;</span>
+                            <div id="@item.Id" class="overlay">
+
+                                Project: @item.Project.Title
+                                <div class="overlay-content">
+                                    <a href="@Url.Action("Delete","Tickets", new {id =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Delete using URl</span>
+                                    </a>
+
+                                    <a href="javascript:void(0);" class="DeleteTicketanchorDetail" data-id="@item.Id">
+                                        <i class="fa fa-cog"></i>
+                                        <span>Delete Ticket</span>
+                                    </a>
+                                    <a href="javascript:void(0);" class="EditTicketanchorDetail" data-id="@item.Id">
+                                        <i class="glyphicon glyphicon-edit"></i>
+                                        <span>Edit Ticket</span>
+                                    </a>
+
+                                    <a href="@Url.Action("Details","Tickets", new {id =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Details of Ticket</span>
+                                    </a>
+
+                                    <a href="@Url.Action("AssignDeveloperTicket","Tickets", new {ticketId =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Assign Developer to Ticket</span>
+                                    </a>
+                                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav(@item.Id)">&times;</a>
+                                </div>
+                            </div>
+
+                        
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <hr />
+
+
+    @if (User.IsInRole("Developer"))
+            {
+        <h2>Developers Tickets</h2>
+
+        <table class="example">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Project")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Priority")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Status")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Type")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Quick Details")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Create Date")
+                    </th>
+                    <th>
+                        @Html.DisplayName("User Options")
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DeveloperTickets)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(m => item.Project.Title)
+                        </td>
+
+
+                        @if ((item.TicketPriority.Name == "High") || (item.TicketPriority.Name == "Highest-Severe Issue"))
+                        {
+
+                            <td> @item.TicketPriority.Name<img src="~/Content/AdminLTE/img/redflag.png" height="15" width="15"></td>
+                        }
+                        else
+                        {
+                            <td> @item.TicketPriority.Name</td>
+                        }
+
+                        <td>
+                            @Html.DisplayFor(m => item.TicketStatus.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.TicketType.Name)
+                        </td>
+
+                        <td>
+                            <a href="javascript:void(0);" class="DISP" data-id="@item.Id">
+                                <i class="glyphicon glyphicon-arrow-down"></i>
+                                <span class="sr-only"></span>Description of Ticket
+                            </a>
+                        </td>
+                        <td>
+                            @item.Created.DateTime.ToLongDateString()
+                        </td>
+
+
+                        <td>
+
+                            <span style="font-size:30px;cursor:pointer" onclick="openNav(@item.Id)">&#9776;</span>
+                            <div id="@item.Id" class="overlay">
+
+                                Project: @item.Project.Title
+                                <div class="overlay-content">
+                                    <a href="javascript:void(0);" class="DeleteTicketanchorDetail" data-id="@item.Id">
+                                        <i class="fa fa-cog"></i>
+                                        <span>Delete Ticket</span>
+                                    </a>
+                                    <a href="javascript:void(0);" class="EditTicketanchorDetail" data-id="@item.Id">
+                                        <i class="glyphicon glyphicon-edit"></i>
+                                        <span>Edit Ticket</span>
+                                    </a>
+
+                                    <a href="@Url.Action("Details","Tickets", new {id =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Details of Ticket</span>
+                                    </a>
+
+                                    <a href="@Url.Action("AssignDeveloperTicket","Tickets", new {ticketId =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Assign Developer to Ticket</span>
+                                    </a>
+                                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav(@item.Id)">&times;</a>
+                                </div>
+                            </div>
+
+
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <hr />
+
+    @if (User.IsInRole("Submitter"))
+            {
+        <h2>Submitter's Tickets</h2>
+
+        <table class="example">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Project")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Priority")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Status")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Type")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Quick Details")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Create Date")
+                    </th>
+                    <th>
+                        @Html.DisplayName("User Options")
+                    </th>
+
+
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.SubmitterTickets)
+                {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(m => item.Project.Title)
+                        </td>
+
+                        @if ((item.TicketPriority.Name == "High") || (item.TicketPriority.Name == "Highest-Severe Issue"))
+                        {
+
+                            <td> @item.TicketPriority.Name<img src="~/Content/AdminLTE/img/redflag.png" height="15" width="15"></td>
+                        }
+                        else
+                        {
+                            <td> @item.TicketPriority.Name</td>
+                        }
+
+                        <td>
+                            @Html.DisplayFor(m => item.TicketStatus.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.TicketType.Name)
+                        </td>
+
+                        <td>
+                            <a href="javascript:void(0);" class="DISP" data-id="@item.Id">
+                                <i class="glyphicon glyphicon-arrow-down"></i>
+                                <span class="sr-only"></span>Description of Ticket
+                            </a>
+                        </td>
+                        <td>
+                            @item.Created.DateTime.ToLongDateString()
+                        </td>
+
+                        <td>
+
+                            <span style="font-size:30px;cursor:pointer" onclick="openNav(@item.Id)">&#9776;</span>
+                            <div id="@item.Id" class="overlay">
+
+                                Project: @item.Project.Title
+                                <div class="overlay-content">
+                                    <a href="javascript:void(0);" class="DeleteTicketanchorDetail" data-id="@item.Id">
+                                        <i class="fa fa-cog"></i>
+                                        <span>Delete Ticket</span>
+                                    </a>
+                                    <a href="javascript:void(0);" class="EditTicketanchorDetail" data-id="@item.Id">
+                                        <i class="glyphicon glyphicon-edit"></i>
+                                        <span>Edit Ticket</span>
+                                    </a>
+
+                                    <a href="@Url.Action("Details","Tickets", new {id =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Details of Ticket</span>
+                                    </a>
+
+                                    <a href="@Url.Action("AssignDeveloperTicket","Tickets", new {ticketId =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Assign Developer to Ticket</span>
+                                    </a>
+                                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav(@item.Id)">&times;</a>
+                                </div>
+                            </div>
+
+
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <hr />
+
+    @if (User.IsInRole("ProjectManager"))
+    {
+        <h2>Project Manager's Tickets</h2>
+
+        <table class="example">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayName("Project")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Priority")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Status")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Type")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Quick Details")
+                    </th>
+                    <th>
+                        @Html.DisplayName("Create Date")
+                    </th>
+                    <th>
+                        @Html.DisplayName("User Options")
+                    </th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ProjectManagerTickets)
+                {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(m => item.Project.Title)
+                        </td>
+
+                        @if ((item.TicketPriority.Name == "High") || (item.TicketPriority.Name == "Highest-Severe Issue"))
+                        {
+
+                            <td> @item.TicketPriority.Name<img src="~/Content/AdminLTE/img/redflag.png" height="15" width="15"></td>
+                        }
+                        else
+                        {
+                            <td> @item.TicketPriority.Name</td>
+                        }
+
+                        <td>
+                            @Html.DisplayFor(m => item.TicketStatus.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(m => item.TicketType.Name)
+                        </td>
+
+                        <td>
+                            <a href="javascript:void(0);" class="DISP" data-id="@item.Id">
+                                <i class="glyphicon glyphicon-arrow-down"></i>
+                                <span class="sr-only"></span>Description of Ticket
+                            </a>
+                        </td>
+                        <td>
+                            @item.Created.DateTime.ToLongDateString()
+                        </td>
+
+
+                        <td>
+
+                            <span style="font-size:30px;cursor:pointer" onclick="openNav(@item.Id)">&#9776;</span>
+                            <div id="@item.Id" class="overlay">
+
+                                Project: @item.Project.Title
+                                <div class="overlay-content">
+                                    <a href="javascript:void(0);" class="DeleteTicketanchorDetail" data-id="@item.Id">
+                                        <i class="fa fa-cog"></i>
+                                        <span>Delete Ticket</span>
+                                    </a>
+                                    <a href="javascript:void(0);" class="EditTicketanchorDetail" data-id="@item.Id">
+                                        <i class="glyphicon glyphicon-edit"></i>
+                                        <span>Edit Ticket</span>
+                                    </a>
+
+                                    <a href="@Url.Action("Details","Tickets", new {id =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Details of Ticket</span>
+                                    </a>
+
+                                    <a href="@Url.Action("AssignDeveloperTicket","Tickets", new {ticketId =item.Id})">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                        <span>Assign Developer to Ticket</span>
+                                    </a>
+                                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav(@item.Id)">&times;</a>
+                                </div>
+                            </div>
+
+
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+</div>
+
+
+
+
+@section scripts{
+    <script>
+        function openNav(mId) {
+
+            document.getElementById(mId).style.height = "100%";
+            document.getElementById(mId).style.width = "100%";
+        }
+
+        function closeNav(mId) {
+            document.getElementById(mId).style.width = "0%";
+            document.getElementById(mId).style.height = "0%";
+        }
+
+    </script>
+
+    <script src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".example").DataTable();
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

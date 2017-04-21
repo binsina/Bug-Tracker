@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+		<title>Perspective Page View Navigation</title>
+		<meta name="description" content="Perspective Page View Navigation: Transforms the page in 3D to reveal a menu" />
+		<meta name="keywords" content="3d page, menu, navigation, mobile, perspective, css transform, web development, web design" />
+		<meta name="author" content="Codrops" />
+		<link rel="shortcut icon" href="../favicon.ico">
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		<!-- csstransforms3d-shiv-cssclasses-prefixed-teststyles-testprop-testallprops-prefixes-domprefixes-load --> 
+		<script src="js/modernizr.custom.25376.js"></script>
+	</head>
+	<body>
+		<div id="perspective" class="perspective effect-laydown">
+			<div class="container">
+				<div class="wrapper"><!-- wrapper needed for scroll -->
+					<!-- Top Navigation -->
+					<div class="codrops-top clearfix">
+					
+                    </div>
+					<header class="codrops-header">
+					</header>
+					<div class="main clearfix">
+						<div class="column">
+							<!--<p><button id="showMenu">Show Menu</button></p>
+							<p>Click on this button to see the content being pushed away in 3D to reveal a navigation or other items.</p>-->
+						</div>
+						<div class="column">
+							<nav class="codrops-demos">
+								<a href="index.html">Airbnb Effect</a>
+								<a href="index2.html">Move Left</a>
+								<a href="index3.html">Rotate Left</a>
+								<a href="index4.html">Move Down</a>
+								<a href="index5.html">Rotate Top</a>
+								<a href="index6.html" class="current-demo">Lay Down</a>
+							</nav>
+						</div>
+						<div class="related">
+							<p>If you enjoyed this demo you might also like:</p>
+							<!--<p><a href="http://tympanus.net/Tutorials/AnimatedBorderMenus/">Animated Border Menus</a></p>
+							<p><a href="http://tympanus.net/Development/SidebarTransitions/">Transitions for Off-Canvas Navigations</a></p>-->
+						</div>
+					</div><!-- /main -->
+				</div><!-- wrapper -->
+			</div><!-- /container -->
+            <nav class="outer-nav top horizontal">
+                <a href="@Url.Action(" Index", "TicketTypes" )" class="icon-home">Home</a>
+                <a href="@Url.Action(" Index", "Home" )" class="icon-news">News</a>
+                <a href="@Url.Action(" Index", "TicketPriorities" )" class="icon-image">Images</a>
+                @Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "icon-upload" })
+                @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "icon-star" })
+                <a href="@Url.Action(" Index", "TicketTypes" )" class="icon-mail">Messages</a>
+                <a href="#@Url.Action(" Index", "TicketTypes" )" class="icon-lock">Security</a>
+            </nav>
+		</div><!-- /perspective -->
+
+
+
+
+        <script src="~/PN/js/classie.js"></script>
+        <script src="~/PN/js/menu.js"></script>
+	</body>
+</html>
